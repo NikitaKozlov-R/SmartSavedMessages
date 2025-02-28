@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        input,
+        button {
+            font-size: 18px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px;
+            background: #f0f0f0;
+            margin: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Ваши сообщения</h1>
+    <input type="text" id="messageInput" placeholder="Введите сообщение">
+    <button onclick="sendMessage()">Отправить</button>
+    <ul id="messageList"></ul>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Растягиваем окно
+
+        const userId = tg.initDataUnsafe?.user?.id || 'test-user';
+
+        async function loadMessages() {
+            const response = await fetch(`http://localhost:3000/messages/${userId}`);
+            const messages = await response.json();
+            const list = document.getElementById("messageList");
+            list.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById("messageInput");
+            const text = input.value;
+            if (!text) return;
+
+            await fetch("http://localhost:3000/messages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId, text })
+            });
+
+            input.value = "";
+            loadMessages();
+        }
+
+        loadMessages();
+    </script>
+</body>
+
+</html>
