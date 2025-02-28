@@ -45,9 +45,10 @@
         tg.expand(); // Растягиваем окно
 
         const userId = tg.initDataUnsafe?.user?.id || 'test-user';
+        const backendUrl = "https://smartsavedmessages.onrender.com"; // Укажите ваш URL
 
         async function loadMessages() {
-            const response = await fetch(`http://localhost:3000/messages/${userId}`);
+            const response = await fetch(`${backendUrl}/messages/${userId}`);
             const messages = await response.json();
             const list = document.getElementById("messageList");
             list.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
@@ -58,7 +59,7 @@
             const text = input.value;
             if (!text) return;
 
-            await fetch("http://localhost:3000/messages", {
+            await fetch("${backendUrl}/messages", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId, text })
