@@ -9,15 +9,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-let messages = {}; // Храним сообщения в памяти
+let messages = {};
 
-// API для получения сообщений пользователя
+// ПОЛУЧЕНИЕ СООБЩЕНИЙ
 app.get("/messages/:userId", (req, res) => {
   const userId = req.params.userId;
   res.json(messages[userId] || []);
 });
 
-// API для сохранения сообщения
+// СОХАРЕНИЕ СООБЩЕНИЙ
 app.post("/messages", (req, res) => {
   const { userId, text } = req.body;
   if (!messages[userId]) {
